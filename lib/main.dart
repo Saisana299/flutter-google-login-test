@@ -2,16 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:login_test/env/env.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
-  await dotenv.load(fileName: '.env'); // .envファイルをロードする
   // supabaseの初期化
   await Supabase.initialize(
-    url: dotenv.get('PUBLIC_SUPABASE_URL'), // supabaseのURL
-    anonKey: dotenv.get('PUBLIC_SUPABASE_ANON_KEY'), // supabaseのプロジェクトのAPIキー(anon)
+    url: Env.supabaseUrl, // supabaseのURL
+    anonKey: Env.anonKey, // supabaseのプロジェクトのAPIキー(anon)
   );
   runApp(const MyApp());
 }
@@ -50,8 +49,8 @@ class _MyHomePageState extends State<MyHomePage> {
   // Android, iOS の場合のGoogleログイン処理
   Future<void> _nativeGoogleSignIn() async {
     final GoogleSignIn googleSignIn = GoogleSignIn(
-      clientId: Platform.isAndroid ? dotenv.get('ANDROID_CLIENT_ID') : dotenv.get('IOS_CLIENT_ID'),
-      serverClientId: dotenv.get('WEB_CLIENT_ID'),
+      clientId: Platform.isAndroid ? Env.androidClientId : Env.iosClientId,
+      serverClientId: Env.webClientId,
     );
     final googleUser = await googleSignIn.signIn();
     final googleAuth = await googleUser!.authentication;
